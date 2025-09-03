@@ -10,7 +10,7 @@ workouts = []
 
 @app.route("/")
 def index():
-    return render_template('index.html')
+    return render_template('index.html', workouts=workouts)
 
 @app.route('/add_workout', methods=['POST'])
 def add_workout():
