@@ -112,7 +112,6 @@ def api_add_workout():
 @app.route('/api/workouts/<int:workout_id>', methods=['DELETE'])
 def api_delete_workout(workout_id):
     """API endpoint to delete a workout"""
-    global workouts
     workout_to_remove = None
     
     for workout in workouts:
