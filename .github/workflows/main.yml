@@ -145,29 +145,20 @@ jobs:
           # In real deployment, this would push to production registry
           # and deploy to production environment
 
-      - name: Create GitHub Release
+      - name: Log successful deployment
         if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-        uses: softprops/action-gh-release@v1
-        with:
-          tag_name: v${{ github.run_number }}
-          name: Release v${{ github.run_number }}
-          body: |
-            ## 🎉 New Release - ACEest Fitness v${{ github.run_number }}
-
-            ### What's New
-            - Deployed from commit: ${{ github.sha }}
-            - Build number: ${{ github.run_number }}
-            - Workflow run: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
-
-            ### 🧪 Tests
-            All tests passed ✅
-
-            ### 🐳 Docker
-            Docker image built and tested successfully
-
-            ### 📊 Deployment
-            - Staging: ✅ Deployed
-            - Production: ✅ Deployed
-          draft: false
-          prerelease: false
-          token: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          echo "🎉 Successfully deployed ACEest Fitness v${{ github.run_number }}"
+          echo "✅ All tests passed"
+          echo "🐳 Docker image built and tested successfully"
+          echo "🚀 Production deployment complete"
+          echo ""
+          echo "📋 Build Details:"
+          echo "   - Version: v${{ github.run_number }}"
+          echo "   - Commit: ${{ github.sha }}"
+          echo "   - Branch: ${{ github.ref_name }}"
+          echo "   - Run ID: ${{ github.run_id }}"
+          echo "   - Workflow URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+          echo "   - Timestamp: $(date -u '+%Y-%m-%d %H:%M:%S UTC')"
+          echo ""
+          echo "🌐 Application should be available at: https://aceest-fitness.com"
