@@ -46,7 +46,7 @@ def add_workout():
         }
         
         workouts.append(new_workout)
-        flash(f"'{workout_name}' added successfully!", 'success')
+        flash(f"{workout_name} added successfully!", 'success')
         
     except Exception as e:
         flash(f'An error occurred: {str(e)}', 'error')
@@ -71,42 +71,41 @@ def api_get_workouts():
 def api_add_workout():
     """API endpoint to add workout via JSON"""
     try:
-        data = request.get_json()
-        
+        data = request.get_json(silent=True)
         if not data:
             return jsonify({'success': False, 'error': 'No data provided'}), 400
-        
+
         workout_name = data.get('workout_name', '').strip()
         duration = data.get('duration')
-        
+
         if not workout_name:
             return jsonify({'success': False, 'error': 'Workout name is required'}), 400
-        
+
         if not duration:
             return jsonify({'success': False, 'error': 'Duration is required'}), 400
-        
+
         try:
             duration_int = int(duration)
             if duration_int <= 0:
                 return jsonify({'success': False, 'error': 'Duration must be positive'}), 400
         except (ValueError, TypeError):
             return jsonify({'success': False, 'error': 'Duration must be a valid number'}), 400
-        
+
         new_workout = {
             'id': len(workouts) + 1,
             'workout': workout_name,
             'duration': duration_int,
             'date_added': datetime.now().strftime('%Y-%m-%d %H:%M:%S')
         }
-        
+
         workouts.append(new_workout)
-        
+
         return jsonify({
             'success': True,
-            'message': f"'{workout_name}' added successfully!",
+            'message': f"{workout_name} added successfully!",
             'workout': new_workout
         }), 201
-        
+
     except Exception as e:
         return jsonify({'success': False, 'error': str(e)}), 500
 
