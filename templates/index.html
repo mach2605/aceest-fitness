@@ -13,7 +13,7 @@
         
         body {
             font-family: 'Arial', sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #7f86a7 0%, #d6bcf0 100%);
             min-height: 100vh;
             padding: 20px;
         }
@@ -141,7 +141,29 @@
             border-radius: 15px;
             text-align: center;
         }
-        
+
+        .workout-stats {
+            margin-bottom: 30px;
+        }
+
+        .stat-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            text-align: center;
+        }
+
+        .stat-item {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 15px;
+            border-radius: 10px;
+            transition: transform 0.3s;
+        }
+
+        .stat-item:hover {
+            transform: translateY(-5px);
+        }
+
         @media (max-width: 768px) {
             .container {
                 margin: 10px;
@@ -154,6 +176,10 @@
             
             .header h1 {
                 font-size: 2em;
+            }
+
+            .stat-grid {
+                grid-template-columns: 1fr;
             }
         }
     </style>
@@ -175,10 +201,23 @@
                     {% endif %}
                 {% endwith %}
             </div>
-            
-            <div class="stats">
-                <h3>🏃‍♂️ Ready to Log Your Next Workout?</h3>
-                <p>Stay consistent, stay strong!</p>
+
+            <div class="workout-stats">
+                <h2>🏆 Your Fitness Stats</h2>
+                <div class="stat-grid">
+                    <div class="stat-item">
+                        <span class="stat-number">{{ workouts|length if workouts is defined else 0 }}</span>
+                        Total Workouts
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number">{{ workouts|sum(attribute='duration') if workouts is defined else 0 }}</span>
+                        Total Minutes
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number">{{ "%.1f"|format((workouts|sum(attribute='duration') / workouts|length) if workouts and workouts|length > 0 else 0) }}</span>
+                        Avg Duration
+                    </div>
+                </div>
             </div>
             
             <form method="POST" action="{{ url_for('add_workout') }}">
@@ -203,7 +242,7 @@
                 </div>
                 
                 <button type="submit" class="btn btn-full">
-                    ✅ Add Workout
+                     Add Workout
                 </button>
             </form>
             

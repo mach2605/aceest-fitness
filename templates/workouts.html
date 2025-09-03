@@ -13,7 +13,7 @@
         
         body {
             font-family: 'Arial', sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #7f86a7 0%, #d6bcf0 100%);
             min-height: 100vh;
             padding: 20px;
         }
@@ -171,7 +171,7 @@
         }
         
         .btn-primary {
-            background: linear-gradient(45deg, #ff6b6b, #ee5a24);
+            background: linear-gradient(45deg, #667eea, #764ba2);
         }
         
         .navigation {
@@ -234,7 +234,7 @@
                 <div class="workout-list">
                     {% for workout in workouts|reverse %}
                         <div class="workout-item">
-                            <h3>💪 {{ workout.workout }}</h3>
+                            <h3> {{ workout.workout }}</h3>
                             <div class="workout-details">
                                 <div>
                                     <span class="workout-id">#{{ workout.id }}</span>
@@ -257,7 +257,7 @@
             
             <div class="navigation">
                 <a href="{{ url_for('index') }}" class="btn btn-primary">
-                    ➕ Add New Workout
+                    Add New Workout
                 </a>
                 {% if workouts %}
                     <a href="{{ url_for('api_get_workouts') }}" class="btn" target="_blank">
