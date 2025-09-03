@@ -58,40 +58,10 @@ jobs:
             test-results.xml
             coverage.xml
 
-  security:
-    name: Security Scan
-    runs-on: ubuntu-latest
-    needs: test
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Set up Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: "3.11"
-
-      - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install safety bandit
-          pip install -r requirements.txt
-
-      - name: Run safety check (dependency vulnerabilities)
-        run: |
-          safety check --json --output safety-report.json || true
-          cat safety-report.json
-
-      - name: Run bandit security linter
-        run: |
-          bandit -r . -f json -o bandit-report.json || true
-          cat bandit-report.json
-
   build:
     name: Build and Test Docker Image
     runs-on: ubuntu-latest
-    needs: [test, security]
+    needs: test
 
     steps:
       - name: Checkout code
@@ -147,32 +117,6 @@ jobs:
           path: aceest-fitness-image.tar
           retention-days: 5
 
-  deploy-staging:
-    name: Deploy to Staging
-    runs-on: ubuntu-latest
-    needs: build
-    if: github.ref == 'refs/heads/develop'
-    environment: staging
-
-    steps:
-      - name: Download Docker image
-        uses: actions/download-artifact@v3
-        with:
-          name: docker-image
-
-      - name: Load Docker image
-        run: |
-          docker load -i aceest-fitness-image.tar
-
-      - name: Deploy to staging (simulation)
-        run: |
-          echo "🚀 Deploying to staging environment..."
-          echo "Image: ${{ env.IMAGE_NAME }}:latest"
-          echo "Environment: Staging"
-          echo "URL: https://staging.aceest-fitness.com"
-          # In real deployment, this would push to staging registry
-          # and deploy to staging environment
-
   deploy-production:
     name: Deploy to Production
     runs-on: ubuntu-latest
@@ -226,26 +170,3 @@ jobs:
             - Production: ✅ Deployed
           draft: false
           prerelease: false
-
-  notification:
-    name: Send Notifications
-    runs-on: ubuntu-latest
-    needs: [test, build, deploy-production]
-    if: always()
-
-    steps:
-      - name: Notification Success
-        if: needs.test.result == 'success' && needs.build.result == 'success'
-        run: |
-          echo "✅ Pipeline completed successfully!"
-          echo "🎉 ACEest Fitness application is ready!"
-          echo "📊 All tests passed"
-          echo "🐳 Docker image built successfully"
-          echo "🚀 Deployment completed"
-
-      - name: Notification Failure
-        if: failure()
-        run: |
-          echo "❌ Pipeline failed!"
-          echo "🔍 Check the logs for details"
-          echo "🛠️ Fix the issues and try again"
