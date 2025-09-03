@@ -98,13 +98,20 @@ jobs:
           docker run --rm -v $(pwd):/app -w /app ${{ env.IMAGE_NAME }}:latest \
             sh -c "python -m pytest test_app.py -v"
 
-      - name: Scan Docker image for vulnerabilities
-        uses: docker/scout-action@v1
-        if: github.event_name != 'pull_request'
+      # Alternative security scanning with Trivy (free and open source)
+      - name: Run Trivy vulnerability scanner
+        uses: aquasecurity/trivy-action@master
         with:
-          command: cves
-          image: ${{ env.IMAGE_NAME }}:latest
-          only-severities: critical,high
+          image-ref: ${{ env.IMAGE_NAME }}:latest
+          format: "sarif"
+          output: "trivy-results.sarif"
+          severity: "CRITICAL,HIGH"
+
+      - name: Upload Trivy scan results to GitHub Security tab
+        uses: github/codeql-action/upload-sarif@v3
+        if: always()
+        with:
+          sarif_file: "trivy-results.sarif"
 
       - name: Export Docker image
         run: |
