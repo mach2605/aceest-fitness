@@ -51,7 +51,7 @@ jobs:
 
       - name: Upload test results
         if: always()
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: test-results
           path: |
@@ -111,7 +111,7 @@ jobs:
           docker save ${{ env.IMAGE_NAME }}:latest -o aceest-fitness-image.tar
 
       - name: Upload Docker image artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: docker-image
           path: aceest-fitness-image.tar
@@ -126,7 +126,7 @@ jobs:
 
     steps:
       - name: Download Docker image
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: docker-image
 
